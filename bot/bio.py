@@ -1,5 +1,5 @@
 from datetime import datetime
-from .config import TZ, WEEKDAYS, MAX_BIO_LEN
+from .config import TZ, WEEKDAYS, MAX_BIO_LEN, BIO_SUFFIX
 
 
 def now_parts() -> tuple[str, str]:
@@ -13,5 +13,8 @@ def secs_to_next_minute() -> float:
 
 
 def format_bio(weather: str, day: str, time_str: str, spotify: str) -> str:
-    return f"{weather} · {day} · {time_str} | {spotify}"[:MAX_BIO_LEN]
+    parts = [f"{weather} · {day} · {time_str}", spotify]
+    if BIO_SUFFIX:
+        parts.append(BIO_SUFFIX)
+    return " | ".join(parts)[:MAX_BIO_LEN]
 

@@ -10,6 +10,7 @@ SESSION_NAME = os.getenv("SESSION_NAME", "userbot")
 CITY = os.getenv("CITY", "Yekaterinburg")
 TZ = pytz.timezone(os.getenv("TIMEZONE", "Asia/Yekaterinburg"))
 MAX_BIO_LEN = int(os.getenv("MAX_BIO_LEN", "140"))
+BIO_SUFFIX = os.getenv("BIO_SUFFIX", "")
 WEEKDAYS = ("пн", "вт", "ср", "чт", "пт", "сб", "вс")
 
 SPOTIPY_CLIENT_ID = os.getenv("SPOTIPY_CLIENT_ID")

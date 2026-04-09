@@ -16,7 +16,7 @@ sp = Spotify(
     )
 )
 
-_NOT_PLAYING = "🎵 ɪ'ᴍ ɴᴏᴛ ʟɪsᴛᴇɴɪɴɢ ᴛᴏ ᴍᴜsɪᴄ ɴᴏᴡ."
+_NOT_PLAYING = "🎶 ɪ'ᴍ ɴᴏᴛ ʟɪsᴛᴇɴɪɴɢ ᴛᴏ ᴍᴜsɪᴄ ɴᴏᴡ."
 
 
 def _ms_to_mmss(ms: int) -> str:
@@ -33,7 +33,7 @@ async def fetch_spotify() -> str:
         artist = item["artists"][0]["name"]
         track = item["name"]
         position = _ms_to_mmss(data["progress_ms"])
-        return f"🎵 {artist} — {track} · {position}"
+        return f"🎶 {artist} — {track} · {position}"
     except Exception as e:
         log.warning("spotify: %s", e)
         return _NOT_PLAYING
