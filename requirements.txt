@@ -1,0 +1,6 @@
+telethon
+spotipy
+aiohttp
+python-dotenv
+pytz
+
