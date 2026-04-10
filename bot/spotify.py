@@ -1,22 +1,40 @@
 import asyncio
+import json
 import logging
+import os
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
 from .config import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI
 
 log = logging.getLogger(__name__)
 
-sp = Spotify(
-    auth_manager=SpotifyOAuth(
+_SCOPE = "user-read-currently-playing user-read-playback-state"
+_CACHE = ".spotify_cache"
+_NOT_PLAYING = "🎵 ɪ'ᴍ ɴᴏᴛ ʟɪsᴛᴇɴɪɴɢ ᴛᴏ ᴍᴜsɪᴄ ɴᴏᴡ."
+
+
+def _build_auth() -> SpotifyOAuth:
+    auth = SpotifyOAuth(
         client_id=SPOTIPY_CLIENT_ID,
         client_secret=SPOTIPY_CLIENT_SECRET,
         redirect_uri=SPOTIPY_REDIRECT_URI,
-        scope="user-read-currently-playing user-read-playback-state",
-        cache_path=".spotify_cache",
+        scope=_SCOPE,
+        cache_path=_CACHE,
+        open_browser=False,
     )
-)
+    refresh_token = os.getenv("SPOTIPY_REFRESH_TOKEN", "")
+    if refresh_token and not os.path.exists(_CACHE):
+        auth.cache_handler.save_token_to_cache({
+            "access_token": "",
+            "token_type": "Bearer",
+            "refresh_token": refresh_token,
+            "expires_at": 0,
+            "scope": _SCOPE,
+        })
+    return auth
 
-_NOT_PLAYING = "🎶 ɪ'ᴍ ɴᴏᴛ ʟɪsᴛᴇɴɪɴɢ ᴛᴏ ᴍᴜsɪᴄ ɴᴏᴡ."
+
+sp = Spotify(auth_manager=_build_auth())
 
 
 def _ms_to_mmss(ms: int) -> str:
@@ -33,8 +51,7 @@ async def fetch_spotify() -> str:
         artist = item["artists"][0]["name"]
         track = item["name"]
         position = _ms_to_mmss(data["progress_ms"])
-        return f"🎶 {artist} — {track} · {position}"
+        return f"🎵 {artist} — {track} · {position}"
     except Exception as e:
         log.warning("spotify: %s", e)
         return _NOT_PLAYING
-
